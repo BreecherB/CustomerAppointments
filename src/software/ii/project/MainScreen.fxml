@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="548.0" prefWidth="823.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="software.ii.project.MainScreenController">
+   <children>
+      <TabPane layoutY="7.0" prefHeight="548.0" prefWidth="823.0" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab text="Schedule">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="519.0" prefWidth="301.0">
+                     <children>
+                        <TableView fx:id="scheduleTV" layoutX="83.0" layoutY="187.0" onMouseClicked="#selectAppointment" prefHeight="170.0" prefWidth="658.0">
+                          <columns>
+                            <TableColumn fx:id="startColumn" prefWidth="100.0" text="Start Time" />
+                              <TableColumn fx:id="endColumn" prefWidth="100.0" text="End Time" />
+                              <TableColumn fx:id="typeColumn" prefWidth="252.0" text="Type of Appointment" />
+                              <TableColumn fx:id="customerNameColumn" prefWidth="205.0" text="Name" />
+                          </columns>
+                        </TableView>
+                        <Button layoutX="703.0" layoutY="140.0" mnemonicParsing="false" onAction="#appointmentAddButtonPushed" text="Add" />
+                        <Button layoutX="690.0" layoutY="431.0" mnemonicParsing="false" onAction="#appointmentSaveButtonPushed" prefHeight="25.0" prefWidth="53.0" text="Save" />
+                        <Button layoutX="690.0" layoutY="462.0" mnemonicParsing="false" onAction="#appointmentDeleteButtonPushed" text="Delete" />
+                        <GridPane layoutX="73.0" layoutY="373.0" prefHeight="116.0" prefWidth="323.0">
+                           <children>
+                              <Label text="Start Time" GridPane.rowIndex="1" />
+                              <Label text="End Time" GridPane.rowIndex="2" />
+                              <Label text="Type of Appointment" GridPane.rowIndex="3" />
+                              <TextField fx:id="typeFieldUpdate" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <ChoiceBox fx:id="endTimeUpdate" prefHeight="25.0" prefWidth="192.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <ChoiceBox fx:id="startTimeUpdate" prefHeight="25.0" prefWidth="192.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Label text="Day" />
+                              <DatePicker fx:id="datePickerUpdate" prefHeight="25.0" prefWidth="230.0" GridPane.columnIndex="1" />
+                           </children>
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="157.0" minWidth="10.0" prefWidth="131.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="201.0" minWidth="10.0" prefWidth="192.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                        </GridPane>
+                        <TableView fx:id="customerAppointmentTV" layoutX="432.0" layoutY="53.0" prefHeight="112.0" prefWidth="244.0">
+                          <columns>
+                            <TableColumn fx:id="customerAppointmentNameColumn" minWidth="0.0" prefWidth="243.0" text="Customer Name" />
+                          </columns>
+                        </TableView>
+                        <GridPane layoutX="73.0" layoutY="51.0" prefHeight="116.0" prefWidth="323.0">
+                           <children>
+                              <Label text="Start Time" GridPane.rowIndex="1" />
+                              <Label text="End Time" GridPane.rowIndex="2" />
+                              <Label text="Type of Appointment" GridPane.rowIndex="3" />
+                              <TextField fx:id="typeField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <ChoiceBox fx:id="endTime" prefHeight="25.0" prefWidth="192.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <ChoiceBox fx:id="startTime" prefHeight="25.0" prefWidth="192.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Label text="Day" />
+                              <DatePicker fx:id="datePicker" prefHeight="25.0" prefWidth="230.0" GridPane.columnIndex="1" />
+                           </children>
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="157.0" minWidth="10.0" prefWidth="131.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="201.0" minWidth="10.0" prefWidth="192.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                        </GridPane>
+                        <Label layoutX="311.0" layoutY="20.0" text="Schedule for: ">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <DatePicker fx:id="scheduleDatePicker" layoutX="432.0" layoutY="18.0" onAction="#changeDay" />
+                        <GridPane layoutX="412.0" layoutY="373.0" prefHeight="33.0" prefWidth="323.0">
+                           <children>
+                              <Label text="Customer Name" />
+                              <TextField fx:id="customerNameUpdate" disable="true" editable="false" GridPane.columnIndex="1" />
+                           </children>
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="157.0" minWidth="10.0" prefWidth="131.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="201.0" minWidth="10.0" prefWidth="192.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                        </GridPane>
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+            <Tab text="Customers">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView fx:id="customerTV" layoutX="63.0" layoutY="158.0" onMouseClicked="#selectCustomer" prefHeight="208.0" prefWidth="726.0">
+                          <columns>
+                            <TableColumn fx:id="nameColumn" editable="false" prefWidth="180.0" text="Name" />
+                              <TableColumn fx:id="addressColumn" editable="false" prefWidth="207.0" text="Street Address" />
+                              <TableColumn fx:id="cityColumn" editable="false" prefWidth="134.0" text="City" />
+                              <TableColumn fx:id="countryColumn" editable="false" prefWidth="98.0" text="Country" />
+                              <TableColumn fx:id="numberColumn" editable="false" prefWidth="106.0" text="Phone Number" />
+                          </columns>
+                        </TableView>
+                        <Button layoutX="751.0" layoutY="124.0" mnemonicParsing="false" onAction="#customerAddButtonPushed" text="Add" />
+                        <Button layoutX="694.0" layoutY="477.0" mnemonicParsing="false" onAction="#customerSaveButtonPushed" text="Save" />
+                        <Button layoutX="745.0" layoutY="477.0" mnemonicParsing="false" onAction="#customerDeleteButtonPushed" text="Delete" />
+                        <GridPane layoutX="63.0" layoutY="34.0" prefHeight="112.0" prefWidth="323.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="157.0" minWidth="10.0" prefWidth="130.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="213.0" minWidth="10.0" prefWidth="193.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label text="Name" />
+                              <Label text="Street Address" GridPane.rowIndex="1" />
+                              <Label text="City" GridPane.rowIndex="2" />
+                              <TextField fx:id="nameField" GridPane.columnIndex="1" />
+                              <TextField fx:id="addressField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <TextField fx:id="cityField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <Label text="State/Province" GridPane.rowIndex="3" />
+                              <TextField fx:id="address2Field" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                           </children>
+                        </GridPane>
+                        <GridPane layoutX="412.0" layoutY="34.0" prefHeight="84.0" prefWidth="323.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="157.0" minWidth="10.0" prefWidth="131.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="201.0" minWidth="10.0" prefWidth="192.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <TextField fx:id="zipField" GridPane.columnIndex="1" />
+                              <TextField fx:id="countryField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Label text="Zip Code" />
+                              <Label text="Country" GridPane.rowIndex="1" />
+                              <Label text="Phone Number" GridPane.rowIndex="2" />
+                              <TextField fx:id="numberField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                           </children>
+                        </GridPane>
+                        <GridPane layoutX="63.0" layoutY="377.0" prefHeight="112.0" prefWidth="323.0">
+                           <children>
+                              <Label text="Name" />
+                              <Label text="Street Address" GridPane.rowIndex="1" />
+                              <Label text="City" GridPane.rowIndex="2" />
+                              <TextField fx:id="nameFieldUpdate" GridPane.columnIndex="1" />
+                              <TextField fx:id="addressFieldUpdate" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <TextField fx:id="cityFieldUpdate" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <Label text="State/Province" GridPane.rowIndex="3" />
+                              <TextField fx:id="address2FieldUpdate" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                           </children>
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="157.0" minWidth="10.0" prefWidth="130.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="213.0" minWidth="10.0" prefWidth="193.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                        </GridPane>
+                        <GridPane layoutX="412.0" layoutY="377.0" prefHeight="112.0" prefWidth="323.0">
+                           <children>
+                              <TextField fx:id="zipFieldUpdate" GridPane.columnIndex="1" />
+                              <TextField fx:id="countryFieldUpdate" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Label text="Zip Code" />
+                              <Label text="Country" GridPane.rowIndex="1" />
+                              <Label text="Phone Number" GridPane.rowIndex="2" />
+                              <TextField fx:id="numberFieldUpdate" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                           </children>
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="157.0" minWidth="10.0" prefWidth="131.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="201.0" minWidth="10.0" prefWidth="192.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                        </GridPane>
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+            <Tab text="Month View">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <DatePicker fx:id="monthDatePicker" layoutX="325.0" layoutY="24.0" onAction="#monthChangeDay" />
+                        <TableView fx:id="monthScheduleTV" layoutX="83.0" layoutY="71.0" onMouseClicked="#selectAppointment" prefHeight="378.0" prefWidth="658.0">
+                           <columns>
+                              <TableColumn fx:id="monthDateColumn" prefWidth="145.0" text="Date" />
+                              <TableColumn fx:id="monthStartColumn" prefWidth="100.0" text="Start Time" />
+                              <TableColumn fx:id="monthEndColumn" prefWidth="100.0" text="End Time" />
+                              <TableColumn fx:id="monthTypeColumn" prefWidth="167.0" text="Type of Appointment" />
+                              <TableColumn fx:id="monthCustomerNameColumn" prefWidth="145.0" text="Name" />
+                           </columns>
+                        </TableView>
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+            <Tab text="Week View">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <DatePicker fx:id="weekDatePicker" layoutX="325.0" layoutY="24.0" onAction="#weekChangeDay" />
+                        <TableView fx:id="weekScheduleTV" layoutX="83.0" layoutY="71.0" onMouseClicked="#selectAppointment" prefHeight="378.0" prefWidth="658.0">
+                           <columns>
+                              <TableColumn fx:id="weekDateColumn" prefWidth="145.0" text="Date" />
+                              <TableColumn fx:id="weekStartColumn" prefWidth="100.0" text="Start Time" />
+                              <TableColumn fx:id="weekEndColumn" prefWidth="100.0" text="End Time" />
+                              <TableColumn fx:id="weekTypeColumn" prefWidth="167.0" text="Type of Appointment" />
+                              <TableColumn fx:id="weekCustomerNameColumn" prefWidth="145.0" text="Name" />
+                           </columns>
+                        </TableView>
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+            <Tab onSelectionChanged="#reportTabClicked" text="Reports">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <DatePicker fx:id="reportDatePicker" layoutX="83.0" layoutY="39.0" onAction="#reportChangeDay" prefHeight="25.0" prefWidth="210.0" />
+                        <Label fx:id="monthLabel" layoutX="83.0" layoutY="79.0" prefHeight="17.0" prefWidth="88.0" />
+                        <TextField fx:id="monthField" layoutX="226.0" layoutY="75.0" prefHeight="25.0" prefWidth="67.0" />
+                        <TableView fx:id="reportTV" layoutX="83.0" layoutY="249.0" onMouseClicked="#selectAppointment" prefHeight="245.0" prefWidth="658.0">
+                           <columns>
+                              <TableColumn fx:id="reportDateColumn" prefWidth="145.0" text="Date" />
+                              <TableColumn fx:id="reportStartColumn" prefWidth="100.0" text="Start Time" />
+                              <TableColumn fx:id="reportEndColumn" prefWidth="100.0" text="End Time" />
+                              <TableColumn fx:id="reportTypeColumn" prefWidth="167.0" text="Type of Appointment" />
+                              <TableColumn fx:id="reportCustomerNameColumn" prefWidth="145.0" text="Name" />
+                           </columns>
+                        </TableView>
+                        <TableView fx:id="customerReportTV" layoutX="83.0" layoutY="126.0" onMouseClicked="#selectReportCustomer" prefHeight="112.0" prefWidth="246.0">
+                           <columns>
+                              <TableColumn fx:id="customerReportNameColumn" minWidth="0.0" prefWidth="245.0" text="Customer Name" />
+                           </columns>
+                        </TableView>
+                        <GridPane layoutX="442.0" layoutY="148.0" prefHeight="90.0" prefWidth="299.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="234.0" minWidth="10.0" prefWidth="228.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="144.0" minWidth="10.0" prefWidth="71.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <TextField fx:id="halfAppointmentField" GridPane.columnIndex="1" />
+                              <TextField fx:id="hourAppointmentField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <TextField fx:id="overAnHourAppointmentField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <Label text="Number of Half Hour Appointments" />
+                              <Label text="Number of Hour Appointments" GridPane.rowIndex="1" />
+                              <Label text="Number of Over an Hour Appointments" GridPane.rowIndex="2" />
+                           </children>
+                        </GridPane>
+                        <Label layoutX="83.0" layoutY="14.0" text="Number of Appointments in the Month" />
+                        <TableView fx:id="typeTV" layoutX="441.0" layoutY="14.0" prefHeight="113.0" prefWidth="300.0">
+                          <columns>
+                            <TableColumn fx:id="typeToCount" prefWidth="146.0" text="Type of Appointment" />
+                            <TableColumn fx:id="typeCount" prefWidth="153.0" text="How many" />
+                          </columns>
+                        </TableView>
+                     </children></AnchorPane>
+               </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+   </children>
+</AnchorPane>

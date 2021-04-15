@@ -41,7 +41,7 @@ public class FXMLDocumentController implements Initializable {
 
     
 
-    //controls log in with error notifications for incorrect or missing username/passwords
+    //Controls log in with error notifications for incorrect or missing username/passwords
     @FXML private void loginButtonPushed(ActionEvent event) throws IOException, SQLException {
         
         String username = usernameField.getText();
@@ -50,17 +50,15 @@ public class FXMLDocumentController implements Initializable {
         currentUser = User.getUser(username, password);
         
         if (currentUser.getUsername() == null)
-            
             errorLabel.setText(rb1.getString("error"));
-        
         else {
-
             Parent tableViewParent = FXMLLoader.load(getClass().getResource("MainScreen.fxml"));
             Scene tableViewScene = new Scene(tableViewParent);
             Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
             window.setScene(tableViewScene);
             window.show();
             
+            //Logs who logs in and when in the UserLog file
             String filename = "UserLog.text";
             FileWriter userLogWriter = new FileWriter(filename, true);
             PrintWriter userLog = new PrintWriter(userLogWriter);
@@ -68,22 +66,15 @@ public class FXMLDocumentController implements Initializable {
             userLog.close();
             
             currentUser.setUser(currentUser);
-            
         } 
-
     }
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
+        //Sets up the login screen buttons with different language options
         loginButton.setText(rb1.getString("login"));
         usernameLabel.setText(rb1.getString("username"));
         passwordLabel.setText(rb1.getString("password"));
-
-        
-        
     }    
-   
-    
-    
 }

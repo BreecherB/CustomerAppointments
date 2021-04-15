@@ -4,6 +4,7 @@ import Utilities.DBConnection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 /**
@@ -115,11 +116,13 @@ public class Address {
         this.city = city;
     }
 
+    //Determines if the given address is already in the database and returns 0 if it is not
     public static int selectStatement(String address) throws SQLException {
 
-        PreparedStatement checkAddress = DBConnection.getConnection().prepareStatement("select * from address where address = \"" + address + "\"");
-        checkAddress.execute();
-        ResultSet rs = checkAddress.getResultSet();
+        PreparedStatement ps = DBConnection.getConnection().prepareStatement("select * from address where address = ?");
+        ps.setString(1, address);
+        ps.execute();
+        ResultSet rs = ps.getResultSet();
         
         int count = 0; 
         while (rs.next())
@@ -128,65 +131,73 @@ public class Address {
         return count;
     }
     
-    public static String insertStatement(String address, String city, String address2, String zip, String number, String currentUser) throws SQLException {
+    //Inserts an address into the database
+    public static void insertStatement(String address, String city, String address2, String zip, String number, String currentUser) throws SQLException {
         
-        PreparedStatement psAddress = DBConnection.getConnection().prepareStatement("insert into address (address, address2, cityId, postalCode, phone, createDate, createdBy, lastUpdate, lastUpdateBy) values (?, ?, (select cityId from city where city = \"" + city + "\"), ?, ?, \"" + LocalDateTime.now() + "\", ?, \"" + LocalDateTime.now() + "\", ?)");
-        psAddress.setString(1, address);
-        psAddress.setString(2, address2);
-        psAddress.setString(3, zip);
-        psAddress.setString(4, number);
-        psAddress.setString(5, currentUser);
-        psAddress.setString(6, currentUser);
-
-        psAddress.execute();
-
-        return city;
-        
+        PreparedStatement ps = DBConnection.getConnection().prepareStatement("insert into address (address, address2, cityId, postalCode, phone, createDate, createdBy, lastUpdate, lastUpdateBy) values (?, ?, (select cityId from city where city = ?), ?, ?, ?, ?, ?, ?)");
+        ps.setString(1, address);
+        ps.setString(2, address2);
+        ps.setString(3, city);
+        ps.setString(4, zip);
+        ps.setString(5, number);
+        ps.setTimestamp(6, Timestamp.valueOf(LocalDateTime.now()));
+        ps.setString(7, currentUser);
+        ps.setTimestamp(8, Timestamp.valueOf(LocalDateTime.now()));
+        ps.setString(9, currentUser);
+        ps.execute();
     }
     
+    //Returns the addressId for the given address
     public static String selectAddressId(String address) throws SQLException {
         
-        PreparedStatement psAddressId = DBConnection.getConnection().prepareStatement("select addressId from address where address = \"" + address + "\"");
-        ResultSet rs = psAddressId.executeQuery();
+        String id = null;
+        PreparedStatement ps = DBConnection.getConnection().prepareStatement("select addressId from address where address = ?");
+        ps.setString(1, address);
+        ResultSet rs = ps.executeQuery();
         
         if (rs.next()) {
-            
-            addressId = rs.getString(1);
-            
+            id = rs.getString(1);
         }
 
-        return addressId;
-        
+        return id;
     }
 
+    //Returns a full address object with the given address information
     public static Address getAddress(String address, String address2, String postalCode, String phone, City city) throws SQLException {
         
-        Address getAddress = new Address(addressId, address, address2, postalCode, phone, city);
-        PreparedStatement psGetAddress = DBConnection.getConnection().prepareStatement("select addressId, address from address where address = \"" + address + "\"");
-        ResultSet rs = psGetAddress.executeQuery();
+        String id = null;
+        Address getAddress = new Address(id, address, address2, postalCode, phone, city);
+        PreparedStatement ps = DBConnection.getConnection().prepareStatement("select addressId, address from address where address = ?");
+        ps.setString(1, address);
+        ResultSet rs = ps.executeQuery();
 
         if (rs.next()) {
             
-            addressId = rs.getString(1);
+            id = rs.getString(1);
             address = rs.getString(2);
-            getAddress.setAddressId(addressId);
+            getAddress.setAddressId(id);
             getAddress.setAddress(address);
-            getAddress.setCity(city);
-            
         }
         
         return getAddress;
-        
     }
     
+    //Updates an address in the database
     public static Address updateAddress(String addressId, String address, String address2, String postalCode, String phone, City city, String currentUser) throws SQLException {
         
         Address updateAddress = new Address(addressId, address, address2, postalCode, phone, city);
-        PreparedStatement psUpdateAddress = DBConnection.getConnection().prepareStatement("update address set address = \"" + address + "\", address2 = \"" + address2 + "\", postalCode = \"" + postalCode + "\", phone = \"" + phone + "\", lastUpdate = \"" + LocalDateTime.now() + "\", lastUpdateBy = \"" + currentUser + "\" where addressId = \"" + addressId + "\"");
-        psUpdateAddress.executeUpdate();
+        PreparedStatement ps = DBConnection.getConnection().prepareStatement("update address set address = ?, address2 = ?, postalCode = ?, phone = ?, lastUpdate = ?, lastUpdateBy = ? where addressId = ?");
+        ps.setString(1, address);
+        ps.setString(2, address2);
+        ps.setString(3, postalCode);
+        ps.setString(4, phone);
+        ps.setTimestamp(5, Timestamp.valueOf(LocalDateTime.now()));
+        ps.setString(6, currentUser);
+        ps.setString(7, addressId);
+        
+        ps.executeUpdate();
         
         return updateAddress;
-        
     }
  
 }

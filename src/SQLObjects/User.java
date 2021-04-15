@@ -45,14 +45,15 @@ public class User {
     public void setUser(User user) {
         this.user = user;
     }
-    
 
-    
+    //Checks if there is a user with the given login information
     public static User getUser(String username, String password) throws SQLException {
         
         User getUser = new User(username, password);      
-        PreparedStatement psGetUser = DBConnection.getConnection().prepareStatement("Select userName, password from user where userName = \"" + username + "\"" + " and password = \"" + password + "\"");
-        ResultSet rs = psGetUser.executeQuery();
+        PreparedStatement ps = DBConnection.getConnection().prepareStatement("Select userName, password from user where userName = ? and password = ?");
+        ps.setString(1, username);
+        ps.setString(2, password);
+        ResultSet rs = ps.executeQuery();
 
         if (rs.next()) {
             username = rs.getString(1);
@@ -60,34 +61,27 @@ public class User {
             
             getUser.setUsername(username);
             getUser.setPassword(password);
-            
         } else {
-            
             getUser.setUsername(null);
             getUser.setPassword(null);
-            
         }
 
         return getUser;
-        
     }
     
+    //Gets the userId for the given username
     public String getUserId(String username) throws SQLException {
         
         String userId;
-        PreparedStatement psGetUserId = DBConnection.getConnection().prepareStatement("Select userId from user where userName = \"" + username + "\"");
-        ResultSet rs = psGetUserId.executeQuery();
+        PreparedStatement ps = DBConnection.getConnection().prepareStatement("Select userId from user where userName = ?");
+        ps.setString(1, username);
+        ResultSet rs = ps.executeQuery();
         
         if(rs.next()) {
-            
             userId = rs.getString(1);
-            
-        } else
-            
+        } else 
             userId = null;
         
         return userId;
-        
     }
-    
 }

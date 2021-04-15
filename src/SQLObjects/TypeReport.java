@@ -1,9 +1,5 @@
 package SQLObjects;
 
-import Utilities.DBConnection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -39,7 +35,4 @@ public class TypeReport {
     public void setCount(int count) {
         this.count = count;
     }
-    
-
-    
 }

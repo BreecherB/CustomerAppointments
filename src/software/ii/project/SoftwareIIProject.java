@@ -22,17 +22,12 @@ public class SoftwareIIProject extends Application {
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
-        
     }
 
     public static void main(String[] args) throws SQLException {
 
         Connection conn = DBConnection.getConnection();
-
         launch(args);
-        
         DBConnection.closeConnection();
-        
     }
-    
 }

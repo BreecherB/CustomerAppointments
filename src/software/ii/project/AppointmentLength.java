@@ -8,6 +8,6 @@ import SQLObjects.Appointment;
  */
 public interface AppointmentLength {
 
+    //int value returning abstract method
     int countAppointment(Appointment a);
-    
 }

@@ -89,66 +89,62 @@ public class City {
         this.country = country;
     }
     
+    //Determines if a city is already in the database and returns 0 if it is not
     public static int selectStatement(String city) throws SQLException {
 
-        PreparedStatement checkCity = DBConnection.getConnection().prepareStatement("select * from city where city = \"" + city + "\"");
-        checkCity.execute();
-        ResultSet rs = checkCity.getResultSet();
+        PreparedStatement ps = DBConnection.getConnection().prepareStatement("select * from city where city = ?");
+        ps.setString(1, city);
+        ResultSet rs = ps.executeQuery();
         
         int count = 0; 
         while (rs.next())
             ++count;
         
         return count;
-        
     }
     
-    public static String insertStatement(String city, String country, String currentUser) throws SQLException {
+    //Inserts city into the database
+    public static void insertStatement(String city, String country, String currentUser) throws SQLException {
         
-        PreparedStatement psCity = DBConnection.getConnection().prepareStatement("insert into city " + "(city, countryId, createDate, createdBy, lastUpdate, lastUpdateBy) values " + "(?, (select countryId from country where country = \"" + country + "\"), \""  + LocalDateTime.now() + "\", ?, \"" + LocalDateTime.now() + "\", ?)");
-        
-        psCity.setString(1, city);
-        psCity.setString(2, currentUser);
-        psCity.setString(3, currentUser);
-
-        psCity.execute();
-        return city;
-        
+        PreparedStatement ps = DBConnection.getConnection().prepareStatement("insert into city " + "(city, countryId, createDate, createdBy, lastUpdate, lastUpdateBy) values " + "(?, (select countryId from country where country = \"" + country + "\"), \""  + LocalDateTime.now() + "\", ?, \"" + LocalDateTime.now() + "\", ?)");
+        ps.setString(1, city);
+        ps.setString(2, currentUser);
+        ps.setString(3, currentUser);
+        ps.execute();
     }
-        
+    
+    //Gets the cityId for the given city
     public static String selectCityId(String city) throws SQLException {
         
-        PreparedStatement psCityId = DBConnection.getConnection().prepareStatement("select cityId from city where city = \"" + city + "\"");
-        ResultSet rs = psCityId.executeQuery();
+        String id = null;
+        PreparedStatement ps = DBConnection.getConnection().prepareStatement("select cityId from city where city = ?");
+        ps.setString(1, city);
+        ResultSet rs = ps.executeQuery();
         
         if (rs.next()) {
-            
-            cityId = rs.getString(1);
-            
+            id = rs.getString(1);
         }
 
-        return cityId;
-        
+        return id;
     }
     
+    //Returns a full city object with the given city information
     public static City getCity(String city, Country country) throws SQLException {
         
-        City getCity = new City(cityId, city, country);
-        PreparedStatement psGetCity = DBConnection.getConnection().prepareStatement("select cityId, city from city where city = \"" + city + "\"");
-        ResultSet rs = psGetCity.executeQuery();
+        String id = null;
+        City getCity = new City(id, city, country);
+        PreparedStatement ps = DBConnection.getConnection().prepareStatement("select cityId, city from city where city = ?");
+        ps.setString(1, city);
+        ResultSet rs = ps.executeQuery();
 
         if (rs.next()) {
-            
-            cityId = rs.getString(1);
+            id = rs.getString(1);
             city = rs.getString(2);
-            getCity.setCityId(cityId);
+            getCity.setCityId(id);
             getCity.setCity(city);
             getCity.setCountry(country);
-            
         }
         
         return getCity;
-        
     }
-    
 }

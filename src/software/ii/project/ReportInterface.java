@@ -11,5 +11,4 @@ public interface ReportInterface {
     
     //int value returning abstract method
     int addAppointments(ObservableList<Appointment> a);
-    
 }

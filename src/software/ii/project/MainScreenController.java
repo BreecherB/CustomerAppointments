@@ -3,10 +3,7 @@ package software.ii.project;
 import SQLObjects.Address;
 import SQLObjects.Appointment;
 import SQLObjects.City;
-import Utilities.DBConnection;
 import java.net.URL;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
@@ -18,7 +15,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import SQLObjects.Country;
-import static SQLObjects.Customer.getCustomer;
 import javafx.beans.property.SimpleStringProperty;
 import SQLObjects.Customer;
 import SQLObjects.TypeReport;
@@ -117,7 +113,6 @@ public class MainScreenController implements Initializable {
     @FXML private TableColumn<TypeReport, String> typeToCount;
     @FXML private TableColumn<TypeReport, Integer> typeCount;
     @FXML private ChoiceBox type;
-    //@FXML private TextField typeCount;
 
     
     private static ObservableList<Customer> allCustomers = FXCollections.observableArrayList();
@@ -129,7 +124,6 @@ public class MainScreenController implements Initializable {
     private static ObservableList<Appointment> empty = FXCollections.observableArrayList();
     private static ObservableList<Appointment> numberAppointments = FXCollections.observableArrayList();
     private static ObservableList<Appointment> customerAppointments = FXCollections.observableArrayList();
-    //private static ObservableList<String> types = FXCollections.observableArrayList();
     private static ObservableList<String> filteredTypes = FXCollections.observableArrayList();
     private static ObservableList<String> typeListCount = FXCollections.observableArrayList();
     private static ObservableList<TypeReport> types = FXCollections.observableArrayList();
@@ -137,6 +131,7 @@ public class MainScreenController implements Initializable {
     private Customer customerToDelete;
     private String selectedCustomerId;
 
+    //Adds a customer into the database
     public void customerAddButtonPushed (ActionEvent event) throws SQLException {
         
         String name = nameField.getText();
@@ -153,62 +148,48 @@ public class MainScreenController implements Initializable {
         Customer customerObject;
         
         if (name.isEmpty() || number.isEmpty() || address.isEmpty() || city.isEmpty() || country.isEmpty() || zip.isEmpty() || address2.isEmpty()) {
-            
             System.out.println("Please enter a value for each field!");
-            
         } else {
-        
+            
+            //Checks if the country is already in the database
             if (Country.selectStatement(country) == 0) {
-
                 Country.insertStatement(country, currentUser.getUsername());
-
                 countryObject = new Country(Country.selectCountryId(country), country);
                 countryObject.setCountryId(Country.selectCountryId(country));
                 countryObject.setCountry(country);
-
             } else {
-
                 countryObject = Country.getCountry(country);
-
             }
-
+            
+            //Checks if the city is already in the database
             if (City.selectStatement(city) == 0) {
-
                 City.insertStatement(city, country, currentUser.getUsername());
                 cityObject = new City(City.selectCityId(city), city, countryObject);
-
             } else {
-
                 cityObject = City.getCity(city, countryObject);
-
             }
-
+            
+            //Checks if the address is already in the database
             if (Address.selectStatement(address) == 0) {
-
                 Address.insertStatement(address, city, address2, zip, number, currentUser.getUsername()); 
                 addressObject = new Address(Address.selectAddressId(address), address, address2, zip, number, cityObject);
-
             } else {
-
                 addressObject = Address.getAddress(address, address2, zip, number, cityObject);
-
             }
-
+            
+            //Checks if the customer is already in the database
             if (Customer.selectStatement(name) == 0) {
-
                 Customer.insertStatement(address, name, LocalDateTime.ofInstant(Instant.now(), ZoneId.of("UTC")), currentUser.getUsername(), LocalDateTime.ofInstant(Instant.now(), ZoneId.of("UTC")), currentUser.getUsername());
                 customerObject = new Customer(Customer.selectCustomerId(name), true, name, LocalDateTime.now(), currentUser.getUsername(), LocalDateTime.now(), currentUser.getUsername(), addressObject);
-
             } else {
-
                 customerObject = Customer.getCustomer(true, name, LocalDateTime.ofInstant(Instant.now(), ZoneId.of("UTC")), currentUser.getUsername(), LocalDateTime.ofInstant(Instant.now(), ZoneId.of("UTC")), currentUser.getUsername(), addressObject);
-
             }
-
+            
             allCustomers.add(customerObject);
         }
     }
     
+    //Takes the selected customer in the table view and enters the data into the text fields
     public void selectCustomer (MouseEvent event) throws SQLException {
         
         Customer selectedCustomer = customerTV.getSelectionModel().getSelectedItem();
@@ -225,9 +206,9 @@ public class MainScreenController implements Initializable {
         address2FieldUpdate.setText(selectedCustomerAddress.getAddress2());
         
         selectedCustomerId = Customer.selectCustomerId(selectedCustomer.getCustomerName());
-
     }
-        
+    
+    //Saves the changes made to the selected customer
     public void customerSaveButtonPushed (ActionEvent event) throws SQLException {
 
         Customer selectedCustomer = customerTV.getSelectionModel().getSelectedItem();
@@ -252,69 +233,55 @@ public class MainScreenController implements Initializable {
         Customer customerObject;
 
         if (name.isEmpty() || number.isEmpty() || address.isEmpty() || city.isEmpty() || country.isEmpty() || zip.isEmpty() || address2.isEmpty()) {
-            
             System.out.println("Please enter a value for each field!");
-            
         } else {
-
+            
+            //Checks if the country is already in the database
             if (Country.selectStatement(country) == 0) {
                 Country.insertStatement(country, currentUser.getUsername());
-
                 countryObject = new Country(Country.selectCountryId(country), country);
                 countryObject.setCountryId(Country.selectCountryId(country));
                 countryObject.setCountry(country);
-
             } else {
-
                 countryObject = Country.getCountry(country);
-
             }
 
+            //Checks if the city is already in the database
             if (City.selectStatement(city) == 0) {
-
                 City.insertStatement(city, country, currentUser.getUsername());
                 cityObject = new City(City.selectCityId(city), city, countryObject);
-
             } else {
-
                 cityObject = City.getCity(city, countryObject);
-
             }
 
+            //Checks if the address is already in the database
             if (Address.selectStatement(address) == 0) {
-
                 Address.insertStatement(address, city, address2, zip, number, currentUser.getUsername()); 
                 addressObject = new Address(Address.selectAddressId(address), address, address2, zip, number, cityObject);
-
             } else {
-
                 addressObject = Address.updateAddress(addressId, address, address2, zip, number, cityObject, currentUser.getUsername());
-
             }
 
             customerObject = Customer.getCustomer(active, name, createDate, createdBy, lastUpdate, lastUpdatedBy, addressObject);
-
-            PreparedStatement psUpdateCustomer = DBConnection.getConnection().prepareStatement("update customer set customerName = \"" + name + "\", addressId = \"" + addressObject.getAddressId() + "\", lastUpdate = \"" + LocalDateTime.ofInstant(Instant.now(), ZoneId.of("UTC")) + "\", lastUpdateBy = \"" + currentUser.getUsername() + "\" where customerId = \"" + id + "\"");
-            psUpdateCustomer.executeUpdate();
+            Customer.updateCustomer(id, name, addressId, currentUser.getUsername());
             System.out.println("Update Complete");
 
             allCustomers.set((allCustomers.indexOf(selectedCustomer)), customerObject);
             updateCustomerTV();
         }
-        
     }
     
+    //Deletes the customer the customer table view currently has selected
     public void customerDeleteButtonPushed (ActionEvent event) throws SQLException {
         
         customerToDelete = customerTV.getSelectionModel().getSelectedItem();
         allCustomers.remove(customerToDelete);
         updateCustomerTV();
-        
-        PreparedStatement psRemoveCustomer = DBConnection.getConnection().prepareStatement("delete from customer where customerName = \"" + customerToDelete.getCustomerName() + "\"");
-        psRemoveCustomer.execute();
 
+        Customer.deleteCustomer(Customer.selectCustomerId(customerToDelete.getCustomerName()));
     }
     
+    //Adds an appointment into the database
     public void appointmentAddButtonPushed (ActionEvent event) throws SQLException {
         
         Appointment appointmentToAdd;
@@ -335,65 +302,60 @@ public class MainScreenController implements Initializable {
         LocalDateTime lastUpdate = LocalDateTime.ofInstant(Instant.now(), ZoneId.of("UTC"));
         String lastUpdateBy = currentUser.getUsername();
 
+        //Checks if the start time is after midnight and pushes back the day if it is
         if (utcStart.getDayOfYear() > start.getDayOfYear()) {
-            
             utcStart.minusDays(1);
             utcEnd.minusDays(1);
-            
         }
         
+        //Checks the appointment times to ensure there isn't any conflicts before adding the appointment
         if (utcEnd.isBefore(utcStart)) {
-            
             System.out.println("Appointment ends before it starts! Please change end time.");
-            
-        } else if (timeCheck(utcStart, utcEnd, datePicker.getValue()) == false) {
-            
+        } else if (Time.timeCheck(utcStart, utcEnd, datePicker.getValue()) == false) {
             System.out.println("Appointment conflicts with another appointment. Please check start and end times!");
-            
         } else {
-            
             Appointment.addAppointment(customerId, userId, title, description, location, contact, type, url, utcStart, utcEnd, createDate, createdBy, lastUpdate, lastUpdateBy);
             appointmentToAdd = Appointment.selectAppointment(Appointment.mostRecentAddedAppointment());
-            todaysAppointments.add(appointmentToAdd);
-            allAppointments.add(appointmentToAdd);
-            updateScheduleTV();
             
+            if (datePicker.getValue().getDayOfYear() == LocalDate.now().getDayOfYear()) {
+                todaysAppointments.add(appointmentToAdd);
+                allAppointments.add(appointmentToAdd);
+            } else
+                allAppointments.add(appointmentToAdd);
+            
+            updateScheduleTV();
         }
     }
     
+    //Clears today's appointments and retrieves the new day's appointments
     public void changeDay (ActionEvent event) {
         
         todaysAppointments.clear();
-        
         try {
-            
-            todaysAppointments(scheduleDatePicker.getValue());
-            
+            Appointment.todaysAppointments(scheduleDatePicker.getValue(), todaysAppointments, allAppointments);
         } catch (SQLException ex) {
-            
             System.out.println("Error: " + ex);
-            
         }
         
         clearAppointmentUpdateFields(scheduleDatePicker.getValue());
-        
     }
     
+    //Clears the current day's data and retrieves the new day's data
     public void reportChangeDay (ActionEvent event) throws SQLException {
         
         numberAppointments.clear();
         
-        selectCurrentMonthAppointments(reportDatePicker.getValue());
+        Appointment.selectCurrentMonthAppointments(reportDatePicker.getValue(), monthAppointments);
         monthLabel.setText(reportDatePicker.getValue().getMonth().toString());
         ReportInterface report = a -> a.size();
         monthField.setText("" + report.addAppointments(numberAppointments));
         
         types.clear();
-        typeCount(reportDatePicker.getValue().getMonthValue());
+        Appointment.typeCount(reportDatePicker.getValue().getMonthValue(), types);
         updateTypeTV();
-        
     }
     
+    //Changes whose appointments are reported in the reports tab
     public void selectReportCustomer (MouseEvent event) throws SQLException {
         
         customerAppointments.clear();
@@ -401,44 +363,34 @@ public class MainScreenController implements Initializable {
         String reportCustomerId = customerReportTV.getSelectionModel().getSelectedItem().getCustomerName();
         reportCustomerId = Customer.selectCustomerId(reportCustomerId);
         
-        reportTV.setItems(customerAppointments(reportCustomerId));
-
+        reportTV.setItems(Appointment.customerAppointments(reportCustomerId, customerAppointments));
     }
     
+    //Changes the months table view to show a different set of 30 days
     public void monthChangeDay (ActionEvent event) {
         
         monthAppointments.clear();
-        
         try {
-            
-            selectMonthAppointments(monthDatePicker.getValue());
+            Appointment.selectMonthAppointments(monthDatePicker.getValue(), monthAppointments);
             updateMonthTV();
-            
         } catch (SQLException ex) {
-            
             System.out.println("Error: " + ex);
-            
         }
- 
     }
     
+    //Changes the weeks table view to show a different set of 7 days
     public void weekChangeDay (ActionEvent event) {
         
         weekAppointments.clear();
-        
         try {
-            
-            selectWeekAppointments(weekDatePicker.getValue());
+            Appointment.selectWeekAppointments(weekDatePicker.getValue(), weekAppointments);
             updateWeekTV();
-            
         } catch (SQLException ex) {
-            
             System.out.println("Error: " + ex);
-            
         }
-        
     }
     
+    //Takes the selected appointment in the table view and enters the data into the text fields
     public void selectAppointment (MouseEvent event) throws SQLException {
         
         Appointment selectedAppointment = scheduleTV.getSelectionModel().getSelectedItem();
@@ -455,9 +407,9 @@ public class MainScreenController implements Initializable {
         endTimeUpdate.getSelectionModel().select(selectedAppointmentEnd);
         typeFieldUpdate.setText(selectedAppointmentType);
         customerNameUpdate.setText(selectedAppointmentCustomer.getCustomerName());
-        
     }
     
+    //Saves the changes made to the selected appointment
     public void appointmentSaveButtonPushed (ActionEvent event) throws SQLException {
 
         Appointment appointmentToModify = scheduleTV.getSelectionModel().getSelectedItem();
@@ -469,6 +421,7 @@ public class MainScreenController implements Initializable {
         LocalDateTime utcUpdatedEnd = Time.toUTCTime(updatedEnd, ZoneId.systemDefault());
         String updatedType = typeFieldUpdate.getText();
         
+        //Checks if the start time is after midnight and pushes back the day if it is
         if(utcUpdatedStart.getDayOfYear() > updatedStart.getDayOfYear()) {
             utcUpdatedStart.minusDays(1);
             utcUpdatedEnd.minusDays(1);
@@ -479,9 +432,10 @@ public class MainScreenController implements Initializable {
         modifiedAppointment.setDate(datePickerUpdate.getValue());
         modifiedAppointment.setType(typeFieldUpdate.getText());
         
+        //Checks the appointment times to ensure there isn't any conflicts before updating the appointment
         if (utcUpdatedEnd.isBefore(utcUpdatedStart)) {
             System.out.println("Appointment ends before it starts! Please change end time.");
-        } else if (timeCheck(appointmentId, utcUpdatedStart, utcUpdatedEnd, datePickerUpdate.getValue()) == false) {
+        } else if (Time.timeCheck(appointmentId, utcUpdatedStart, utcUpdatedEnd, datePickerUpdate.getValue()) == false) {
             System.out.println("Appointment conflicts with another appointment. Please check start and end times!");
         } else {
             Appointment.updateAppointment(appointmentId, utcUpdatedStart, utcUpdatedEnd, updatedType, currentUser.getUsername());
@@ -490,9 +444,9 @@ public class MainScreenController implements Initializable {
         
         updateScheduleTV();
         System.out.println("done");
-        
     }
     
+    //Deletes the appointment currently selected in the appointment table view
     public void appointmentDeleteButtonPushed (ActionEvent event) throws SQLException {
         
         Appointment appointmentToDelete = scheduleTV.getSelectionModel().getSelectedItem();
@@ -500,16 +454,16 @@ public class MainScreenController implements Initializable {
         Appointment.deleteAppointment(appointmentToDelete.getAppointmentId());
         updateScheduleTV();
         clearAppointmentUpdateFields(scheduleDatePicker.getValue());        
-        
     }
     
+    //Populates the reports tab with current information when the tab is selected
     public void reportTabClicked (Event event) throws SQLException {
         
         typeToCount.setCellValueFactory(c-> new SimpleStringProperty(c.getValue().getType()));
         typeCount.setCellValueFactory(new PropertyValueFactory("count"));
         
         types.clear();
-        typeCount(reportDatePicker.getValue().getMonthValue());
+        Appointment.typeCount(reportDatePicker.getValue().getMonthValue(), types);
         updateTypeTV();
         
         //Lambda to count appointments for a given month
@@ -538,9 +492,7 @@ public class MainScreenController implements Initializable {
                     countOverAnHour++;
                     i++;
                     break;
-                    
             }
-            
         }
         
         halfAppointmentField.setText(Integer.toString(countHalf));
@@ -553,11 +505,8 @@ public class MainScreenController implements Initializable {
             customerAppointments.clear();
             String reportCustomerId = customerReportTV.getSelectionModel().getSelectedItem().getCustomerName();
             reportCustomerId = Customer.selectCustomerId(reportCustomerId);
-            reportTV.setItems(customerAppointments(reportCustomerId));
-            
+            reportTV.setItems(Appointment.customerAppointments(reportCustomerId, customerAppointments));
         }
-
- 
     }
         
     @Override
@@ -603,37 +552,28 @@ public class MainScreenController implements Initializable {
         monthLabel.setText(reportDatePicker.getValue().getMonth().toString());
 
         try {
-
-            if (appointmentWithin15Minutes(LocalDateTime.now()) == true) {
-                
+            //Checks to see if there is an appointment within 15 minutes of logging in
+            if (Time.appointmentWithin15Minutes(LocalDateTime.now()) == true) {
                 Alert alert = new Alert(AlertType.WARNING);
                 alert.setTitle("Check Appointment Time");
                 alert.setHeaderText("Reminder!");
                 alert.setContentText("There is an appointment within 15 minutes!");
                 alert.showAndWait();
-                
             } else;
-            
         } catch (SQLException ex) {
-            
             Logger.getLogger(MainScreenController.class.getName()).log(Level.SEVERE, null, ex);
-            
         }
-
+        
         try {
-            
-            getCurrentCustomers();
-            todaysAppointments(scheduleDatePicker.getValue());
-            selectMonthAppointments(monthDatePicker.getValue());
-            selectCurrentMonthAppointments(reportDatePicker.getValue());
-            selectWeekAppointments(weekDatePicker.getValue());
+            Customer.getCurrentCustomers(allCustomers);
+            Appointment.todaysAppointments(scheduleDatePicker.getValue(), todaysAppointments, allAppointments);
+            Appointment.selectMonthAppointments(monthDatePicker.getValue(), monthAppointments);
+            Appointment.selectCurrentMonthAppointments(reportDatePicker.getValue(), monthAppointments);
+            Appointment.selectWeekAppointments(weekDatePicker.getValue(), weekAppointments);
             updateMonthTV();
             updateWeekTV();
-            
         } catch (SQLException ex) {
-            
             System.out.println("Error: " + ex);
-            
         }
 
         updateCustomerTV();
@@ -657,262 +597,34 @@ public class MainScreenController implements Initializable {
         //Adds the business hours to choice boxes in the local time
         startTime.setItems(times);
         endTime.setItems(times);
-   
     }   
 
-    public static ObservableList<Customer> getCurrentCustomers() throws SQLException {
-        
-        String name;
-        LocalDateTime createDate;
-        String createdBy;
-        LocalDateTime lastUpdate;
-        String lastUpdateBy;
-        String customerAddress;
-        String customerAddress2;
-        String postalCode;       
-        String city;
-        String country;
-        String phone;
-        
-        Country countryObject;
-        City cityObject;
-        Address addressObject;
-        Customer customerObject;
-        
-        PreparedStatement psCurrentCustomer = DBConnection.getConnection().prepareStatement("select customer.customerName, customer.createDate, customer.createdBy, customer.lastUpdate, customer.lastUpdateBy, address.address, city.city, country.country, address.phone, address.address2, address.postalCode from customer join address on customer.addressId = address.addressId join city on city.cityId = address.cityId join country on country.countryId = city.countryId");
-        ResultSet rs = psCurrentCustomer.executeQuery();
-        
-        while (rs.next()) {
-            
-            name = rs.getString(1);
-            createDate = rs.getTimestamp(2).toLocalDateTime();
-            createdBy = rs.getString(3);            
-            lastUpdate = rs.getTimestamp(4).toLocalDateTime();
-            lastUpdateBy = rs.getString(5);
-            customerAddress = rs.getString(6);
-            city = rs.getString(7);
-            country = rs.getString(8);
-            phone = rs.getString(9);
-            customerAddress2 = rs.getString(10);
-            postalCode = rs.getString(11);
-            
-            countryObject = Country.getCountry(country);
-            cityObject = City.getCity(city, countryObject);
-            addressObject = Address.getAddress(customerAddress, customerAddress2, postalCode, phone, cityObject);
-            customerObject = getCustomer(true, name, createDate, createdBy, lastUpdate, lastUpdateBy, addressObject);
-            allCustomers.add(customerObject);
-            
-        }
-        
-        return allCustomers;
-    }
-
-    public static ObservableList<Appointment> todaysAppointments(LocalDate datePicker) throws SQLException {
-        
-        String appointmentId;
-        String userId;
-        String customerId;
-        String type;
-        LocalDate date;
-        LocalDateTime start, utcStart;
-        LocalDateTime end, utcEnd;
-        Appointment appointment;
-        Customer customer;
-        PreparedStatement psAppointments = DBConnection.getConnection().prepareStatement("select * from appointment");
-        ResultSet rs = psAppointments.executeQuery();
-
-        while (rs.next()) {
-            
-            appointmentId = rs.getString(1);
-            customerId = rs.getString(2);
-            userId = rs.getString(3);
-            type = rs.getString(8);
-            utcStart = rs.getTimestamp(10).toLocalDateTime();
-            utcEnd = rs.getTimestamp(11).toLocalDateTime();
-            date = rs.getTimestamp(11).toLocalDateTime().toLocalDate();
-            start = Time.utcToCurrentTime(utcStart);
-            end = Time.utcToCurrentTime(utcEnd);
-            
-            if(utcStart.getDayOfYear() > start.getDayOfYear()) {
-                
-                start.minusDays(1);
-                end.minusDays(1);
-                
-            }
-            
-            customer = Customer.getCustomer(customerId);
-            appointment = new Appointment(appointmentId, customer, userId, type, date, start.toLocalTime(), end.toLocalTime());
-            
-            if (date.isEqual(datePicker)) {
-                
-                todaysAppointments.add(appointment);
-                allAppointments.add(appointment);
-                
-            } else
-                
-                allAppointments.add(appointment);
-            
-        }
-        
-        return todaysAppointments;
-        
-    }
-    
-    public static ObservableList<Appointment> selectCurrentMonthAppointments(LocalDate datePicker) throws SQLException {
-        
-        Appointment appointment;
-        int month = datePicker.getMonthValue();
-
-        PreparedStatement psMonthAppointment = DBConnection.getConnection().prepareStatement("select appointmentId from appointment where month(start) = \"" + month +"\"");
-        ResultSet rs = psMonthAppointment.executeQuery();
-        
-        while(rs.next()) {
-            
-            appointment = Appointment.selectAppointment(rs.getString(1));
-
-            numberAppointments.add(appointment);
-            
-        }
-        
-        return numberAppointments;
-    }
-    
-    public static ObservableList<Appointment> selectMonthAppointments(LocalDate datePicker) throws SQLException {
-                
-        Appointment appointment;
-
-        PreparedStatement psMonthAppointment = DBConnection.getConnection().prepareStatement("select appointmentId from appointment where date(start) between \"" + datePicker + "\" and \"" + datePicker.plusDays(30) + "\"");
-        ResultSet rs = psMonthAppointment.executeQuery();
-        
-        while(rs.next()) {
-            
-            appointment = Appointment.selectAppointment(rs.getString(1));
-            monthAppointments.add(appointment);
-            
-        }
-
-        return monthAppointments;
-    }
-    
-    public static ObservableList<Appointment> selectWeekAppointments(LocalDate datePicker) throws SQLException {
-        
-        Appointment appointment;
-
-        PreparedStatement psWeekAppointment = DBConnection.getConnection().prepareStatement("select appointmentId from appointment where date(start) between \"" + datePicker + "\" and \"" + datePicker.plusDays(6) + "\"");
-        ResultSet rs = psWeekAppointment.executeQuery();
-        
-        while(rs.next()) {
-            
-            appointment = Appointment.selectAppointment(rs.getString(1));
-
-            weekAppointments.add(appointment);
-            
-        }
-        
-        
-        return weekAppointments;
-    }
-    
-    public static ObservableList<Appointment> customerAppointments(String currentCustomer) throws SQLException {
-        
-        String appointmentId;
-        String userId;
-        String customerId;
-        String type;
-        LocalDate date;
-        LocalTime start;
-        LocalTime end;
-        Appointment appointment;
-        Customer customer;
-        
-        PreparedStatement psCustomerAppointment = DBConnection.getConnection().prepareStatement("select * from appointment where customerId = \"" + currentCustomer + "\"");
-        ResultSet rs = psCustomerAppointment.executeQuery();
-        
-        while(rs.next()) {
-            
-            appointmentId = rs.getString(1);
-            userId = rs.getString(3);
-            customerId = rs.getString(2);
-            type = rs.getString(8);
-            start = rs.getTimestamp(10).toLocalDateTime().toLocalTime();
-            end = rs.getTimestamp(11).toLocalDateTime().toLocalTime();
-            date = rs.getTimestamp(11).toLocalDateTime().toLocalDate();
-            start = Time.utcToCurrentTime(start, date);
-            end = Time.utcToCurrentTime(end, date);
-            
-            customer = Customer.getCustomer(customerId);
-            appointment = new Appointment(appointmentId, customer, userId, type, date, start, end);
-            
-            customerAppointments.add(appointment);
-            
-        }
-        
-        return customerAppointments;
-        
-    }
-    
-    public static ObservableList typeCount (int month) throws SQLException {
-        
-        String type1;
-        int count1;
-        TypeReport typeR;
-        
-        PreparedStatement typePS = DBConnection.getConnection().prepareStatement("select type, count(type) from appointment where month(start) = \"" + month + "\" group by type");
-        ResultSet rs = typePS.executeQuery();
-        
-        while (rs.next()){
-            
-            type1 = rs.getString(1);
-            count1 = rs.getInt(2);
-            typeR = new TypeReport (type1, count1);
-            types.add(typeR);
-
-        }
-        
-        return types;
-        
-    }
-    
     public void updateCustomerTV() {
-        
         customerTV.setItems(allCustomers);
-        
     }
     
     public void updateScheduleTV() {
-        
         scheduleTV.setItems(todaysAppointments);
-        
     }
     
     public void updateMonthTV() throws SQLException {
-        
         monthScheduleTV.setItems(monthAppointments);
-        
     }
     
     public void updateWeekTV() throws SQLException {
-        
         weekScheduleTV.setItems(weekAppointments);
-        
     }
 
     public void updateCustomerAppointmentTV() {
-        
         customerAppointmentTV.setItems(allCustomers);
-        
     }
     
     public void updateCustomerReportTV() {
-        
         customerReportTV.setItems(allCustomers);
-        
     }
     
     public void updateTypeTV() throws SQLException {
-        
         typeTV.setItems(types);
-        
     }
     
     public void clearAppointmentUpdateFields(LocalDate datePicker) {
@@ -922,92 +634,5 @@ public class MainScreenController implements Initializable {
         endTimeUpdate.setItems(empty);
         typeFieldUpdate.setText("");
         customerNameUpdate.setText("");
-        
     }
-
-    public Boolean timeCheck (String appointmentId, LocalDateTime startTime, LocalDateTime endTime, LocalDate datePicker) throws SQLException {
-        
-        Boolean isTrue = true;
-        LocalDateTime checkTimeStart;
-        LocalDateTime checkTimeEnd;
-        
-        PreparedStatement psTimeCheck = DBConnection.getConnection().prepareStatement("select start, end from appointment where date(start) = \"" + datePicker + "\" and appointmentId !=\"" + appointmentId + "\"");
-        ResultSet rs = psTimeCheck.executeQuery();
-        
-        while(rs.next()) {
-            
-            checkTimeStart = rs.getTimestamp(1).toLocalDateTime();
-            checkTimeEnd = rs.getTimestamp(2).toLocalDateTime();
-            
-            if (startTime.isAfter(checkTimeEnd) && endTime.isAfter(checkTimeStart)) {
-                
-                isTrue = true;
-                
-            } else if (startTime.isBefore(checkTimeEnd) && endTime.isBefore(checkTimeStart)) {
-                
-                isTrue = true;
-                
-            } else {
-                
-                isTrue = false;
-                break;
-                
-            }
-        }
-        
-        return isTrue;
-    }
-    
-    public Boolean timeCheck (LocalDateTime startTime, LocalDateTime endTime, LocalDate datePicker) throws SQLException {
-        
-        Boolean isTrue = true;
-        LocalDateTime checkTimeStart;
-        LocalDateTime checkTimeEnd;
-        
-        PreparedStatement psTimeCheck = DBConnection.getConnection().prepareStatement("select start, end from appointment where date(start) = \"" + datePicker + "\"");
-        ResultSet rs = psTimeCheck.executeQuery();
-        
-        while(rs.next()) {
-            
-            checkTimeStart = rs.getTimestamp(1).toLocalDateTime();
-            checkTimeEnd = rs.getTimestamp(2).toLocalDateTime();
-            
-            if (startTime.isAfter(checkTimeEnd) && endTime.isAfter(checkTimeStart)) {
-                
-                isTrue = true;
-                
-            } else if (startTime.isBefore(checkTimeEnd) && endTime.isBefore(checkTimeStart)) {
-                
-                isTrue = true;
-                
-            } else {
-                
-                isTrue = false;
-                break;
-                
-            }
-        }
-        
-        return isTrue;
-        
-    }
-        
-    public Boolean appointmentWithin15Minutes (LocalDateTime currentTime) throws SQLException {
-        
-        Boolean isWithin15Minutes = false;
-        LocalDateTime time = Time.toUTCTime(currentTime, ZoneId.systemDefault());
-
-        PreparedStatement ps15Minutes = DBConnection.getConnection().prepareStatement("select start from appointment where start between \"" + time + "\" and \"" + time.plusMinutes(15) + "\"");
-        ResultSet rs = ps15Minutes.executeQuery();
-        
-        if (rs.next()) {
-            
-            isWithin15Minutes = true;
-            
-        }
-
-        return isWithin15Minutes;
-        
-    }
-    
 }

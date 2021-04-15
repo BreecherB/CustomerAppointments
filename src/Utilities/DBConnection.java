@@ -27,41 +27,30 @@ public class DBConnection {
     public static Connection getConnection () {
         
         try {
-            
             Class.forName(MYSQLJDBCDriver);
             conn = (Connection)DriverManager.getConnection(jdbcURL, username, password);
-
         } 
         
         catch (ClassNotFoundException e) {
-            
             System.out.println("Error: " + e.getMessage());
-            
         }
         
         catch (SQLException e) {
-            
             System.out.println("Error: " + e.getMessage());
-            
         }
         
         return conn;
-        
     }
     
     public static void closeConnection () {
         
         try {
-            
             conn.close();
             System.out.println("Connection closed!");
-            
         } 
         
         catch(SQLException e) {
-            
             System.out.println("Error: " + e.getMessage());
-            
         }
     }
     
